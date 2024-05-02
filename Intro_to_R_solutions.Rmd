@@ -1,0 +1,341 @@
+---
+title: "Intro to R - Workshop Exercises - Solutions"
+author: "R Ladies Amsterdam"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Part 1 - Working with RStudio
+
+## Exercise 1.1
+Create a variable called first_num and assign it the value 42. Click on the ‘Environment’ tab in the top right window to display the variable and value. Now create another variable called first_char and assign it a value "my first character". Notice this variable is now also displayed in the ‘Environment’ along with it’s value and class (chr - short for character class).
+
+```{r}
+first_num <- 42
+first_char <- "my first character"
+```
+
+## Exercise 1.2
+Remove the variable first_num from your environment using the rm() function. Check out the ‘Environment’ tab to ensure the variable has been removed.
+
+```{r}
+rm(first_num)
+```
+
+## Exercise 1.3
+There are two basic ways in which you can get help on basic R functions. You can do it by either using the ?function_name, or directly looking a function up in the "Help" tab. Run the code below to find out what arguments are used by the mean() function.
+
+```{r}
+?mean
+```
+
+# Part 2 - Basic operations in R
+
+## Exercise 2.1
+Calculate the area of a square with a side length of 5, and store this value in an object called square_area.
+
+```{r}
+square_area <- 5^2
+```
+
+## Exercise 2.2
+There are a multitude of ways to create vectors in R but you will use the concatenate function c() to create a vector called weight containing the weight (in kg) of 10 children: 69, 62, 57, 59, 59, 64, 56, 66, 67, 66. After creating this vector, create another object called first_five, where you will store the first five weights of children (hint: use square brackets to index the right values).
+
+```{r}
+weight <- c(69, 62, 57, 59, 59, 64, 56, 66, 67, 66)
+first_five <- weight[1:5]
+```
+
+## Exercise 2.3
+Let’s go sequence crazy! Generate the following sequences. You will need to experiment with the
+arguments to the rep() function to generate these sequences:
+
+• 1 2 3 1 2 3 1 2 3
+• “a” “a” “a” “c” “c” “c” “e” “e” “e” “g” “g” “g”
+• “a” “c” “e” “g” “a” “c” “e” “g” “a” “c” “e” “g”
+• 1 1 1 1 1 2 2 2 2 3 3 3 4 4 5
+
+```{r}
+rep(1:3, times = 3)
+rep(c("a", "c", "e", "g"), each = 3)
+rep(c("a", "c", "e", "g"), times = 3)
+rep(1:5, times = 5:1)
+```
+
+# Part 3 - Data in R
+
+# Exercise 3.1
+Below you can find four examples of objects containing different data types. Can you investigate what data types these objects are?
+
+```{r}
+equation <- 1 + 1 == 3
+name <- "Anna"
+vector1 <- c("Anna", 1, TRUE)
+vector2 <- c(1,2,3,10)
+
+class(equation)
+class(name)
+class(vector1)
+class(vector2)
+```
+
+# Exercise 3.2
+For this exercise you're going to have to download a dataset from the intro2R website: https://alexd106.github.io/intro2R/data.html. The file we'll be working with is called whaledata.xls. To make things easier, save this file in the same working directory as this R file (e.g.: if your intro_to_R_Rmd file is in your downloads folder, the whaledata.xls file should also be in your downloads folder). Now, import this file, and store in in an object called whale_df. Then, inspect the data frame you've imported using functions like head() and summary().
+
+```{r}
+library(readxl)
+whale_df <- read_excel("whaledata.xls")
+head(whale_df)
+summary(whale_df)
+str(whale_df)
+```
+
+# Exercise 3.3 
+To practice simple indexing of the parts of the data you find interesting, we can have a look at the following examples:
+
+a) Extract all the elements of the first 10 rows and the first 4 columns of the whale dataframe and assign
+to a new variable called whale.sub.
+```{r}
+whale.sub <- whale_df[1:10, 1:4] 
+```
+
+b) Next, extract all observations (remember - rows) from the whale dataframe and the columns month,
+water.noise and number.whales and assign to a variable called whale.num.
+```{r}
+# all rows and columns 1, 3 and 6
+whale.num <- whale_df[, c(1, 3, 4)] 
+# alternative way of indexing columns with named indexes
+whale.num <- whale_df[, c("month", "water.noise", "number.whales")]   
+```
+
+c) Now, extract the first 50 rows and all columns form the original dataframe and assign to a variable
+whale.may (there’s a better way to do this with conditional statements - see below).
+```{r}
+# first 50 rows and all columns
+whale.may <- whale_df[1:50, ]  
+```
+
+d) Finally, extract all rows except the first 10 rows and all columns except the last column. Remember, for
+some of these questions you can specify the columns you want either by position or by name. Practice
+both ways. Do you have a preference? If so why?
+```{r}
+# excluding first 10 rows and last column using negative indexing
+whale.last <- whale_df[-c(1:10), -8]  
+# more general way if you have lots of columns
+whale.last <- whale_df[-c(1:10), -c(ncol(whale))] 
+# NOTE: this doesn't work for named columns
+whale.last <- whale_df[-c(1:10), -c("gradient")]   
+```
+
+
+# Part 4 - Data visualizations using Base R
+
+## Exercise 4.1
+The code below loads in the iris dataset, based on which we will create our visualizations. Create a histogram of the Petal.Width column of the dataset. Which petal width is the most common?
+
+Run this block first:
+```{r}
+library(datasets) # Loading in the library that allows you to access some of R's datasets
+flowers <- iris # saving the iris dataset to an object called flowers
+head(flowers) #inspecting the dataset, this allows you to see all the columns and the first 6 rows of the data frame
+```
+
+Now, time for your histogram:
+```{r}
+hist(flowers$Petal.Width)
+```
+
+Another thing: As this is an R Markdown file, your plot will show up directly underneath the code block. Now try to copy the code for your histogram and paste it in the Console below. Your plot should now appear under the Plots tab! Do you remember how to open this plot in a seperate tab?
+
+# Exercise 4.2
+Let's go back to the dataset you've imported in the previous part, which should now be stored in the whale_df. If you haven't gotten to that part yet, ask someone to help you out with downloading the data. Now, play around with the simple plot() function, and plot different variables (columns) of the data. Hint: You can access different variables of a dataset using the df$variable_name structure!
+
+```{r}
+plot(whale_df$number.whales)
+```
+
+# Exercise 4.3
+Now that you've played around with simple plots, you can try adding things to one of the plots of your choice, whether it's the histogram you created in exercise 4.1 or one of the scatterplots from 4.2. Try adding a custom title, and changing the color of data points to blue. IF you still have time, change the xlab and ylab to something more informative.
+
+```{r}
+plot(whale_df$number.whales, col = "blue", 
+     main = "Number of Whales Over Time", 
+     xlab = "Time", ylab = "Number of Whales")
+```
+
+
+# Part 5 - GGplot
+
+# Exercises - reproduce the plots
+```{r}
+data(mtcars)
+```
+
+Plot 1
+```{r}
+plot1 = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth( method = loess) +
+  xlab('Weight (lb/1000)') +
+  ylab('Miles/US Gallon') + 
+  ggtitle("plot 1") +
+  theme_bw() +
+  theme(axis.text= element_text(size = 15), 
+        axis.title=element_text(size = 20),
+        plot.title = element_text(face = 'bold', size = 20)) #,
+        # panel.background = element_rect(fill = "transparent", #### OPTIONAL create transparent background
+        #                             colour = NA_character_), # necessary to avoid drawing panel outline
+        # plot.background = element_rect(fill = "transparent",
+        #                            colour = NA_character_), # necessary to avoid drawing plot outline
+        # legend.background = element_rect(fill = "transparent"),
+        # legend.box.background = element_rect(fill = "transparent"),
+        # legend.key = element_rect(fill = "transparent"))
+
+### OPTIONAL to SAVE  
+# ggsave(
+#   plot = plot1,
+#   filename = "~/Desktop/E_ggplot_plot1.png",
+#   bg = "transparent",
+#   width = 10, height = 10, units = "cm"
+# )
+```
+
+Plot 2
+```{r}
+### PLOT 2
+plot2 = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(color = as.factor(cyl)), size = 5, alpha = 0.7) +
+  xlab('Weight (lb/1000)') +
+  ylab('Miles/US Gallon') + 
+  ggtitle("plot 2") + 
+  labs(colour = "# of cylinders") +
+  theme_bw() +
+  theme(axis.text= element_text(size = 15), 
+        axis.title=element_text(size = 20),
+        plot.title = element_text(face = 'bold', size = 20 )) #,
+        # panel.background = element_rect(fill = "transparent", #### OPTIONAL create transparent background
+        #                             colour = NA_character_), # necessary to avoid drawing panel outline
+        # plot.background = element_rect(fill = "transparent",
+        #                            colour = NA_character_), # necessary to avoid drawing plot outline
+        # legend.background = element_rect(fill = "transparent"),
+        # legend.box.background = element_rect(fill = "transparent"),
+        # legend.key = element_rect(fill = "transparent")) 
+
+plot2
+### OPTIONAL to SAVE  
+ggsave(
+  plot = plot2,
+  filename = "~/Desktop/E_ggplot_plot2.png",
+  bg = "transparent",
+  width = 15, height = 10, units = "cm"
+)
+```
+
+Plot 3
+```{r}
+data(airquality) #import dataset
+
+plot3 = ggplot(airquality, aes(y = as.factor(Month), fill = as.factor(Month))) +
+  geom_bar(stat = "count") +
+  xlab('count') +
+  ylab('Month') + 
+  labs(fill = "Month") + 
+  ggtitle("plot 3") + 
+  theme_bw() +
+  theme(axis.text= element_text(size = 15), 
+        axis.title=element_text(size = 20),
+        plot.title = element_text(face = 'bold', size = 20))#,
+        # legend.title = element_text(size = 20),
+        # legend.text = element_text(size = 15),
+        # panel.background = element_rect(fill = "transparent",
+        #                                 colour = NA_character_), # necessary to avoid drawing panel outline
+        # plot.background = element_rect(fill = "transparent",
+        #                                colour = NA_character_), # necessary to avoid drawing plot outline
+        # legend.background = element_rect(fill = "transparent"),
+        # legend.box.background = element_rect(fill = "transparent"),
+        # legend.key = element_rect(fill = "transparent"))
+
+### OPTIONAL to SAVE 
+# ggsave(
+#   plot = plot3,
+#   filename = "~/Desktop/E_ggplot_plot3.png",
+#   bg = "transparent",
+#   width = 15, height = 10, units = "cm"
+# )
+```
+
+Plot 3 - Extra
+```{r}
+plot31 = ggplot(airquality, aes(y = as.factor(Month), fill = as.factor(Month))) +
+  geom_bar(stat = "count", show.legend = FALSE) +
+  scale_y_discrete(labels=c("5" = "May", "6"= "June",
+                              "7" = "July", "8" = "August", "9" = "September")) +
+  scale_fill_manual(values = c("5" = "#b39eba", "6"= "#a186a9",
+                      "7" = "#7b5587", "8" = "#552565", "9" = "#430d54")) + 
+  xlab('count') +
+  ylab('Month') + 
+  labs(fill = "Month", caption = "colors do not have to match exactly") + 
+  ggtitle("plot 3.1 (optional)") + 
+  theme_bw() +
+  theme(axis.text= element_text(size = 15), 
+        axis.title=element_text(size = 20),
+        plot.title = element_text(face = 'bold', size = 20))#,
+      # legend.title = element_text(size = 20),
+      # legend.text = element_text(size = 15),
+      # panel.background = element_rect(fill = "transparent",
+      #                                 colour = NA_character_), # necessary to avoid drawing panel outline
+      # plot.background = element_rect(fill = "transparent",
+      #                                colour = NA_character_), # necessary to avoid drawing plot outline
+      # legend.background = element_rect(fill = "transparent"),
+      # legend.box.background = element_rect(fill = "transparent"),
+      # legend.key = element_rect(fill = "transparent"))
+
+plot31
+
+### OPTIONAL to SAVE 
+# ggsave(
+#   plot = plot31,
+#   filename = "~/Desktop/E_ggplot_plot3optional.png",
+#   bg = "transparent",
+#   width = 15, height = 10, units = "cm"
+# )
+```
+
+Plot 4
+```{r}
+plot4 = ggplot(airquality, aes(x= Wind, y = Temp)) +
+  geom_point() + 
+  geom_smooth(method = loess) + 
+  facet_wrap(~Month) +
+  xlab('Wind (mph)') +
+  ylab('Temperature (degrees F)') + 
+  ggtitle("plot 4") + 
+  theme_bw() +
+  theme(axis.text= element_text(size = 15), 
+        axis.title=element_text(size = 20),
+        plot.title = element_text(face = 'bold', size = 20))#,
+        # legend.title = element_text(size = 20),
+        # legend.text = element_text(size = 15),
+        # panel.background = element_rect(fill = "transparent",
+        #                                 colour = NA_character_), # necessary to avoid drawing panel outline
+        # plot.background = element_rect(fill = "transparent",
+        #                                colour = NA_character_), # necessary to avoid drawing plot outline
+        # legend.background = element_rect(fill = "transparent"),
+        # legend.box.background = element_rect(fill = "transparent"),
+        # legend.key = element_rect(fill = "transparent"))
+
+### OPTIONAL to SAVE 
+# ggsave(
+#   plot = plot4,
+#   filename = "~/Desktop/E_ggplot_plot4.png",
+#   bg = "transparent",
+#   width = 15, height = 10, units = "cm"
+# )
+
+```
+
